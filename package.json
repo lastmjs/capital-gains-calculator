@@ -3,8 +3,12 @@
   "version": "0.0.0",
   "description": "",
   "scripts": {
-    "fifo": "ts-node app.ts FIFO csv/eth-acquisitions.csv csv/eth-disposals.csv",
-    "hifo": "ts-node app.ts HIFO csv/eth-acquisitions.csv csv/eth-disposals.csv"
+    "eth-fifo": "ts-node app.ts FIFO csv/eth-acquisitions.csv csv/eth-disposals.csv",
+    "eth-hifo": "ts-node app.ts HIFO csv/eth-acquisitions.csv csv/eth-disposals.csv",
+    "btc-fifo": "ts-node app.ts FIFO csv/btc-acquisitions.csv csv/btc-disposals.csv",
+    "btc-hifo": "ts-node app.ts HIFO csv/btc-acquisitions.csv csv/btc-disposals.csv",
+    "sai-fifo": "ts-node app.ts FIFO csv/sai-acquisitions.csv csv/sai-disposals.csv",
+    "sai-hifo": "ts-node app.ts HIFO csv/sai-acquisitions.csv csv/sai-disposals.csv"
   },
   "keywords": [],
   "author": "Jordan Last <jordan.michael.last@gmail.com>",
