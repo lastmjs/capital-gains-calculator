@@ -87,6 +87,7 @@ function handleDisposalGreaterThanOrEqualToAcquisition(
 
     const remainingDisposalNumUnits: BigNumber = disposal.numUnits.minus(acquisition.numUnits);
     const remainingDisposal: Disposal = {
+        asset: disposal.asset,
         date: disposal.date,
         description: disposal.description,
         numUnits: remainingDisposalNumUnits,
@@ -96,10 +97,17 @@ function handleDisposalGreaterThanOrEqualToAcquisition(
     const salesPrice: BigNumber = acquisition.numUnits.multipliedBy(salesPricePerUnit);
 
     const gainOrLoss: GainOrLoss = {
+        asset: disposal.asset,
+        description: `${acquisition.numUnits} ${disposal.asset}`,
         dateAcquired: acquisition.date,
         dateDisposed: disposal.date,
         salesPrice,
-        gainOrLoss: salesPrice.minus(acquisition.costBasisUSD)
+        costBasis: acquisition.costBasisUSD,
+        gainOrLoss: salesPrice.minus(acquisition.costBasisUSD),
+        term: calculateTerm(
+            acquisition.date,
+            disposal.date
+        )
     };
 
     return {
@@ -118,21 +126,46 @@ function handleDisposalLessThanAcquisition(
     const costBasisPerUnit: BigNumber = acquisition.costBasisUSD.dividedBy(acquisition.numUnits);
     const remainingAcquisitionNumUnits: BigNumber = acquisition.numUnits.minus(disposal.numUnits);
     const remainingAcquisition: Acquisition = {
+        asset: acquisition.asset,
         date: acquisition.date,
         description: acquisition.description,
         numUnits: remainingAcquisitionNumUnits,
         costBasisUSD: remainingAcquisitionNumUnits.multipliedBy(costBasisPerUnit)
     };
 
+    const gainOrLossCostBasis = disposal.numUnits.multipliedBy(costBasisPerUnit);
+
     const gainOrLoss: GainOrLoss = {
+        asset: disposal.asset,
+        description: `${disposal.numUnits} ${disposal.asset}`,
         dateAcquired: acquisition.date,
         dateDisposed: disposal.date,
         salesPrice: disposal.fairMarketValueUSD,
-        gainOrLoss: disposal.fairMarketValueUSD.minus(disposal.numUnits.multipliedBy(costBasisPerUnit))
+        costBasis: gainOrLossCostBasis,
+        gainOrLoss: disposal.fairMarketValueUSD.minus(gainOrLossCostBasis),
+        term: calculateTerm(
+            acquisition.date,
+            disposal.date
+        )
     };
 
     return {
         remainingAcquisition,
         gainOrLoss
     };
+}
+
+function calculateTerm(
+    dateAcquired: Date,
+    dateDisposed: Date
+): 'SHORT' | 'LONG' {
+    const dateAcquiredPlusOneYear: Date = new Date(dateAcquired);
+    dateAcquiredPlusOneYear.setFullYear(dateAcquired.getFullYear() + 1);
+
+    if (dateDisposed.getTime() <= dateAcquiredPlusOneYear.getTime()) {
+        return 'SHORT';
+    }
+    else {
+        return 'LONG';
+    }
 }

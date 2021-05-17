@@ -8,6 +8,7 @@ export type FileNames = Readonly<{
 }>;
 
 export type Acquisition = Readonly<{
+    asset: string;
     date: Date;
     description: string;
     numUnits: BigNumber;
@@ -15,6 +16,7 @@ export type Acquisition = Readonly<{
 }>;
 
 export type Disposal = Readonly<{
+    asset: string;
     date: Date;
     description: string;
     numUnits: BigNumber;
@@ -22,11 +24,14 @@ export type Disposal = Readonly<{
 }>;
 
 export type GainOrLoss = Readonly<{
+    asset: string;
+    description: string;
     dateAcquired: Date;
     dateDisposed: Date;
     salesPrice: BigNumber;
+    costBasis: BigNumber;
     gainOrLoss: BigNumber;
-    // TODO add short term or long term designation, do a quick check on the dates to determine if it was held for a year or more
+    term: 'SHORT' | 'LONG';
 }>;
 
 export type Method = 'FIFO' | 'HIFO';

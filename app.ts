@@ -24,15 +24,14 @@ import { calculateGainsAndLossesHIFO } from './hifo';
         disposals,
         process.argv[2] as Method
     );
-    const totalGainOrLoss: BigNumber = gainsOrLosses.reduce((result, gainOrLoss) => {
-        return result.plus(gainOrLoss.gainOrLoss);
-    }, new BigNumber(0));
 
     // console.log('acquisitions', acquisitions);
     // console.log('disposals', disposals);
-    // console.log('gainsOrLosses', gainsOrLosses);
     // console.log('gainsOrLosses.length', gainsOrLosses.length);
-    console.log('totalGainOrLoss', totalGainOrLoss.toString());
+    // console.log('gainsOrLosses', JSON.stringify(gainsOrLosses, null, 4));
+    // console.log('totalGainOrLoss', totalGainOrLoss.toString());
+
+    printGainsOrLosses(gainsOrLosses);
 })();
 
 function prepareAcquisitions(fileName: string): ReadonlyArray<Acquisition> {
@@ -41,10 +40,11 @@ function prepareAcquisitions(fileName: string): ReadonlyArray<Acquisition> {
     const acquisitions: ReadonlyArray<Acquisition> = csvLines.map((csvLine: string) => {
         const csvFields: ReadonlyArray<string> = csvLine.split(',');
         return {
-            date: new Date(csvFields[0]),
-            description: csvFields[1],
-            numUnits: new BigNumber(csvFields[2]),
-            costBasisUSD: new BigNumber(csvFields[3])
+            asset: csvFields[0],
+            date: new Date(csvFields[1]),
+            description: csvFields[2],
+            numUnits: new BigNumber(csvFields[3]),
+            costBasisUSD: new BigNumber(csvFields[4])
         };
     });
 
@@ -57,10 +57,11 @@ function prepareDisposals(fileName: string): ReadonlyArray<Disposal> {
     const disposals: ReadonlyArray<Disposal> = csvLines.map((csvLine: string) => {
         const csvFields: ReadonlyArray<string> = csvLine.split(',');
         return {
-            date: new Date(csvFields[0]),
-            description: csvFields[1],
-            numUnits: new BigNumber(csvFields[2]),
-            fairMarketValueUSD: new BigNumber(csvFields[3])
+            asset: csvFields[0],
+            date: new Date(csvFields[1]),
+            description: csvFields[2],
+            numUnits: new BigNumber(csvFields[3]),
+            fairMarketValueUSD: new BigNumber(csvFields[4])
         };
     });
 
@@ -88,4 +89,30 @@ function calculateGainsAndLosses(
 
     // TODO I wish TypeScript could figure out that reaching this return statement is not possible
     return [];
+}
+
+function printGainsOrLosses(gainsOrLosses: ReadonlyArray<GainOrLoss>) {
+    const shortTermGainsOrLosses: ReadonlyArray<GainOrLoss> = gainsOrLosses.filter((gainOrLoss) => {
+        return gainOrLoss.term === 'SHORT';
+    });
+
+    const totalShortTermGainOrLoss: BigNumber = shortTermGainsOrLosses.reduce((result, gainOrLoss) => {
+        return result.plus(gainOrLoss.gainOrLoss);
+    }, new BigNumber(0));
+
+    console.log('Short Term Gains or Losses');
+    console.log(JSON.stringify(shortTermGainsOrLosses, null, 4));
+    console.log('totalShortTermGainOrLoss', totalShortTermGainOrLoss.toString());
+
+    const longTermGainsOrLosses: ReadonlyArray<GainOrLoss> = gainsOrLosses.filter((gainOrLoss) => {
+        return gainOrLoss.term === 'LONG';
+    });
+
+    const totalLongTermGainOrLoss: BigNumber = longTermGainsOrLosses.reduce((result, gainOrLoss) => {
+        return result.plus(gainOrLoss.gainOrLoss);
+    }, new BigNumber(0));
+
+    console.log('Long Term Gains or Losses');
+    console.log(JSON.stringify(longTermGainsOrLosses, null, 4));
+    console.log('totalLongTermGainOrLoss', totalLongTermGainOrLoss.toString());
 }

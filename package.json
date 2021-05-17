@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "description": "",
   "scripts": {
-    "fifo": "ts-node app.ts FIFO eth-acquisitions.csv eth-disposals-2018.csv",
-    "hifo": "ts-node app.ts HIFO eth-acquisitions.csv eth-disposals-2018.csv"
+    "fifo": "ts-node app.ts FIFO csv/eth-acquisitions.csv csv/eth-disposals.csv",
+    "hifo": "ts-node app.ts HIFO csv/eth-acquisitions.csv csv/eth-disposals.csv"
   },
   "keywords": [],
   "author": "Jordan Last <jordan.michael.last@gmail.com>",
