@@ -1,0 +1,19 @@
+{
+  "name": "capital-gains-calculator",
+  "version": "0.0.0",
+  "description": "",
+  "scripts": {
+    "fifo": "ts-node app.ts FIFO eth-acquisitions.csv eth-disposals-2018.csv",
+    "hifo": "ts-node app.ts HIFO eth-acquisitions.csv eth-disposals-2018.csv"
+  },
+  "keywords": [],
+  "author": "Jordan Last <jordan.michael.last@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@types/inquirer": "7.3.1",
+    "@types/node": "14.14.29",
+    "bignumber.js": "9.0.1",
+    "ts-node": "9.1.1",
+    "typescript": "4.1.5"
+  }
+}
